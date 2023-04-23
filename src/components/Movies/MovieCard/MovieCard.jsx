@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 
 const MovieCard = (props) => {

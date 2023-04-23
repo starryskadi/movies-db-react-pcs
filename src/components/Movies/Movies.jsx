@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useReducer } from "react";
 import MovieCard from "./MovieCard/MovieCard";
 import Search from "../Search/Search";
-import axios from "../../utils/axios";
+
 import {
   Container,
   Grid,
@@ -10,7 +10,27 @@ import {
   Pagination,
   Stack,
   CircularProgress,
+  Button,
 } from "@mui/material";
+import useAxiosMovies from "../../hooks/useAxiosMovies";
+import Navbar from "../Navbar/Navbar";
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "LOGIN":
+      return {
+        ...state,
+        name: action.payload.user.username,
+      };
+    case "RANDOMNUMBER":
+      return {
+        ...state,
+        name: action.payload.number,
+      };
+    default:
+      return state;
+  }
+};
 
 const Movies = () => {
   const ref = React.useRef(null);
@@ -19,86 +39,16 @@ const Movies = () => {
     search: "",
     name: "",
   });
-  const [movies, setMovies] = React.useState([]);
-  const [page, setPage] = React.useState(1);
-  const [totalPages, setTotalPages] = React.useState(10);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
 
-  useEffect(() => {
-    // Promise Hell -> Async Await
-    // Using Axios
-    const fetchMovies = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get(
-          `/3/movie/popular?api_key=70699365be27b444e89363dd68f8397a&page=${page}`
-        );
+  const [newState, dispatch] = useReducer(reducer, {
+    search: "Test",
+    name: "",
+  });
 
-        const fetchedMovies = response.data.results.map((movie) => {
-          return {
-            image: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
-            title: movie.title,
-            id: movie.id,
-          };
-        });
-        setMovies(fetchedMovies);
-        setIsLoading(false);
-      } catch (e) {
-        setError(e.message);
-      }
-    };
+  console.log(newState);
 
-    fetchMovies();
-
-    // Using Javascript Fetch
-    // const fetchPost = async () => {
-    //   setIsLoading(true);
-    //   const response = await fetch(
-    //     `/3/movie/upcoming?api_key=70699365be27b444e89363dd68f8397a&page=${page}`,
-    //     {}
-    //   );
-    //   const data = await response.json();
-    //   if (!response.ok) {
-    //     setError("There is an error");
-    //   }
-    //   setTotalPages(data.total_pages);
-    //   const fetchedMovies = data.results.map((movie) => {
-    //     return {
-    //       image: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
-    //       title: movie.title,
-    //       id: movie.id,
-    //     };
-    //   });
-
-    //   setMovies(fetchedMovies);
-    //   setIsLoading(false);
-    // };
-    // fetchPost();
-  }, [page]);
-
-  // const movies = [
-  //   {
-  //     image: "/movie-poster-1.jpg",
-  //     title: "Prizefighter: The Life of Jem Belcher",
-  //     id: "123",
-  //   },
-  //   // {
-  //   //   image: "/movie-poster-2.jpg",
-  //   //   title: "Puss in Boots: The Last Wish",
-  //   //   id: "ab123",
-  //   // },
-  //   // {
-  //   //   image: "/movie-poster-1.jpg",
-  //   //   title: "Prizefighter: The Life of Jem Belcher",
-  //   //   id: "ab123a",
-  //   // },
-  //   // {
-  //   //   image: "/movie-poster-1.jpg",
-  //   //   title: "Prizefighter: The Life of Jem Belcher",
-  //   //   id: "ab123b",
-  //   // },
-  // ];
+  const { movies, page, setPage, totalPages, isLoading, error } =
+    useAxiosMovies();
 
   const onSearchHandler = (ev) => {
     // console.log(ref.current.value);
@@ -149,29 +99,61 @@ const Movies = () => {
   };
 
   return (
-    <Container maxWidth="xl">
-      <Box mt={4}>
-        <Typography variant="h3" align="center" sx={{ fontWeight: "bold" }}>
-          MoviesDB
-        </Typography>
-      </Box>
-      <Box mb={2}>
-        <Search refer={ref} onClick={onSearchHandler} />
-      </Box>
+    <>
+      <Button
+        onClick={() =>
+          dispatch({
+            type: "RANDOMNUMBER",
+            payload: {
+              number: Math.random() * 256,
+            },
+          })
+        }
+        variant="contained"
+      >
+        Random Numbers
+      </Button>
 
-      <Grid container spacing={2}>
-        {renderMovies()}
-      </Grid>
-      <Box mt={4} mb={4}>
-        <Stack spacing={2} direction="row" justifyContent="center">
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={onPageChangeHandler}
-          />
-        </Stack>
-      </Box>
-    </Container>
+      <Button
+        onClick={() =>
+          dispatch({
+            type: "LOGIN",
+            payload: {
+              user: {
+                username: "John",
+              },
+            },
+          })
+        }
+        variant="contained"
+      >
+        Login
+      </Button>
+      {/* <Navbar></Navbar> */}
+      <Container maxWidth="xl">
+        <Box mt={4}>
+          <Typography variant="h3" align="center" sx={{ fontWeight: "bold" }}>
+            MoviesDB
+          </Typography>
+        </Box>
+        <Box mb={2}>
+          <Search refer={ref} onClick={onSearchHandler} />
+        </Box>
+
+        <Grid container spacing={2}>
+          {renderMovies()}
+        </Grid>
+        <Box mt={4} mb={4}>
+          <Stack spacing={2} direction="row" justifyContent="center">
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={onPageChangeHandler}
+            />
+          </Stack>
+        </Box>
+      </Container>
+    </>
   );
 };
 
