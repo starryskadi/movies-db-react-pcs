@@ -7,6 +7,10 @@ import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import useAuthContext from "./hooks/useAuthContext";
 import AuthContext from "./context/authContext";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MovieCreate from "./components/MovieCreate/MovieCreate";
+
+// category filter, pagination.
 
 const theme = createTheme({});
 
@@ -17,15 +21,22 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       {/* <Toggle /> */}
-      <AuthContext.Provider
-        value={{
-          user,
-          onLogin: onLogin,
-          onLogout: onLogout,
-        }}
-      >
-        <Movies />
-      </AuthContext.Provider>
+      <BrowserRouter>
+        <AuthContext.Provider
+          value={{
+            user,
+            onLogin: onLogin,
+            onLogout: onLogout,
+          }}
+        >
+          {/* <Movies /> */}
+          <Routes>
+            <Route path="/" element={<Movies />}></Route>
+            <Route path="/create" element={<MovieCreate />}></Route>
+            <Route path="*" element={<Movies />}></Route>
+          </Routes>
+        </AuthContext.Provider>
+      </BrowserRouter>
       {/* <Movies /> */}
     </ThemeProvider>
   );

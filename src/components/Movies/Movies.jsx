@@ -14,38 +14,20 @@ import {
 } from "@mui/material";
 import useAxiosMovies from "../../hooks/useAxiosMovies";
 import Navbar from "../Navbar/Navbar";
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "LOGIN":
-      return {
-        ...state,
-        name: action.payload.user.username,
-      };
-    case "RANDOMNUMBER":
-      return {
-        ...state,
-        name: action.payload.number,
-      };
-    default:
-      return state;
-  }
-};
+import MovieReducer from "../../reducers/movies";
 
 const Movies = () => {
   const ref = React.useRef(null);
 
-  const [state, setState] = React.useState({
+  // const [state, setState] = React.useState({
+  //   search: "",
+  //   name: "",
+  // });
+
+  const [state, dispatch] = useReducer(MovieReducer, {
     search: "",
     name: "",
   });
-
-  const [newState, dispatch] = useReducer(reducer, {
-    search: "Test",
-    name: "",
-  });
-
-  console.log(newState);
 
   const { movies, page, setPage, totalPages, isLoading, error } =
     useAxiosMovies();
@@ -53,18 +35,20 @@ const Movies = () => {
   const onSearchHandler = (ev) => {
     // console.log(ref.current.value);
     // Handle Search Function
-    setState({
-      ...state,
-      search: ref.current.value,
+    dispatch({
+      type: "SEARCH",
+      payload: {
+        search: ref.current.value,
+      },
     });
   };
 
-  const onChangeHandler = (ev) => {
-    setState({
-      ...state,
-      [ev.target.name]: ev.target.value,
-    });
-  };
+  // const onChangeHandler = (ev) => {
+  //   setState({
+  //     ...state,
+  //     [ev.target.name]: ev.target.value,
+  //   });
+  // };
 
   const onPageChangeHandler = (ev, value) => {
     setPage(value);
@@ -100,36 +84,7 @@ const Movies = () => {
 
   return (
     <>
-      <Button
-        onClick={() =>
-          dispatch({
-            type: "RANDOMNUMBER",
-            payload: {
-              number: Math.random() * 256,
-            },
-          })
-        }
-        variant="contained"
-      >
-        Random Numbers
-      </Button>
-
-      <Button
-        onClick={() =>
-          dispatch({
-            type: "LOGIN",
-            payload: {
-              user: {
-                username: "John",
-              },
-            },
-          })
-        }
-        variant="contained"
-      >
-        Login
-      </Button>
-      {/* <Navbar></Navbar> */}
+      <Navbar></Navbar>
       <Container maxWidth="xl">
         <Box mt={4}>
           <Typography variant="h3" align="center" sx={{ fontWeight: "bold" }}>
