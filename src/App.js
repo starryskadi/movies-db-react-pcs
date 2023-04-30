@@ -43,6 +43,7 @@ function App() {
               <Route path="/create" element={<MovieCreate />}></Route>
               <Route path="/register" element={<Register />}></Route>
               <Route path="/movie/:id" element={<MovieDetails />}></Route>
+              <Route path="/error" element={<Error />}></Route>
               <Route path="*" element={<Error />}></Route>
             </Route>
           </Routes>

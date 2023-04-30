@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "../utils/axios";
 import useAxios from "./useAxios";
 
-const useFetchMovies = () => {
-  const [page, setPage] = useState(1);
+const useFetchMovies = ({ page }) => {
+  // const [page, setPage] = useState(1);
   const { response, isLoading, error } = useAxios(
     `/3/movie/popular?api_key=70699365be27b444e89363dd68f8397a&page=${page}`,
     [page]
@@ -12,8 +12,6 @@ const useFetchMovies = () => {
   if (!response) {
     return {
       movies: [],
-      page,
-      setPage,
       totalPages: 10,
       isLoading,
       error,
@@ -34,8 +32,6 @@ const useFetchMovies = () => {
 
   return {
     movies,
-    page,
-    setPage,
     totalPages,
     isLoading,
     error,

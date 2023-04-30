@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from "react";
 import MovieCard from "./MovieCard/MovieCard";
 import Search from "../Search/Search";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate, Navigate } from "react-router-dom";
 
 import {
   Container,
@@ -16,11 +16,14 @@ import {
 import useAxiosMovies from "../../hooks/useAxiosMovies";
 import Navbar from "../Navbar/Navbar";
 import MovieReducer from "../../reducers/movies";
+import useAxiosMovieGenres from "../../hooks/useAxiosMovieGenres";
 
 const Movies = () => {
   const ref = React.useRef(null);
   const params = useParams();
-  console.log(params);
+  const navigate = useNavigate();
+
+  const page = Number(params.page) || 1;
 
   // const [state, setState] = React.useState({
   //   search: "",
@@ -32,8 +35,12 @@ const Movies = () => {
     name: "",
   });
 
-  const { movies, page, setPage, totalPages, isLoading, error } =
-    useAxiosMovies();
+  const { movies, totalPages, isLoading, error } = useAxiosMovies({ page });
+  const { genres } = useAxiosMovieGenres();
+
+  if (params.page && isNaN(Number(params.page))) {
+    return <Navigate to="/error" />;
+  }
 
   const onSearchHandler = (ev) => {
     // console.log(ref.current.value);
@@ -54,7 +61,8 @@ const Movies = () => {
   // };
 
   const onPageChangeHandler = (ev, value) => {
-    setPage(value);
+    // setPage(value);
+    navigate(`/${value}`);
   };
 
   const renderMovies = () => {
@@ -99,6 +107,12 @@ const Movies = () => {
         <Box mb={2}>
           <Search refer={ref} onClick={onSearchHandler} />
         </Box>
+
+        {/* <Stack direction="row" spacing={0.5}> */}
+        {genres.map((each) => {
+          return <Button variant="contained"> {each.name} </Button>;
+        })}
+        {/* </Stack> */}
 
         <Grid container spacing={2}>
           {renderMovies()}
