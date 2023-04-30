@@ -9,6 +9,11 @@ import useAuthContext from "./hooks/useAuthContext";
 import AuthContext from "./context/authContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MovieCreate from "./components/MovieCreate/MovieCreate";
+import Error from "./components/Error/Error";
+import Register from "./components/Register/Register";
+import Navbar from "./components/Navbar/Navbar";
+import Layout from "./components/Layout/Layout";
+import MovieDetails from "./components/MovieDetails/MovieDetails";
 
 // category filter, pagination.
 
@@ -29,11 +34,17 @@ function App() {
             onLogout: onLogout,
           }}
         >
-          {/* <Movies /> */}
+          {/* <Navbar></Navbar> */}
+
           <Routes>
-            <Route path="/" element={<Movies />}></Route>
-            <Route path="/create" element={<MovieCreate />}></Route>
-            <Route path="*" element={<Movies />}></Route>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Movies />}></Route>
+              <Route path="/:page" element={<Movies />}></Route>
+              <Route path="/create" element={<MovieCreate />}></Route>
+              <Route path="/register" element={<Register />}></Route>
+              <Route path="/movie/:id" element={<MovieDetails />}></Route>
+              <Route path="*" element={<Error />}></Route>
+            </Route>
           </Routes>
         </AuthContext.Provider>
       </BrowserRouter>

@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer } from "react";
 import MovieCard from "./MovieCard/MovieCard";
 import Search from "../Search/Search";
+import { Link, useParams } from "react-router-dom";
 
 import {
   Container,
@@ -18,6 +19,8 @@ import MovieReducer from "../../reducers/movies";
 
 const Movies = () => {
   const ref = React.useRef(null);
+  const params = useParams();
+  console.log(params);
 
   // const [state, setState] = React.useState({
   //   search: "",
@@ -76,7 +79,9 @@ const Movies = () => {
       .map(({ image, title, id }) => {
         return (
           <Grid item xs={4} key={id}>
-            <MovieCard image={image} title={title} />
+            <Link to={`/movie/${id}`}>
+              <MovieCard image={image} title={title} />
+            </Link>
           </Grid>
         );
       });
@@ -84,7 +89,7 @@ const Movies = () => {
 
   return (
     <>
-      <Navbar></Navbar>
+      {/* <Navbar></Navbar> */}
       <Container maxWidth="xl">
         <Box mt={4}>
           <Typography variant="h3" align="center" sx={{ fontWeight: "bold" }}>
