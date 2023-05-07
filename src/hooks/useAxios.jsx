@@ -7,6 +7,8 @@ const useAxios = (url, dependencies) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log("Dependencies", dependencies);
+
   useEffect(
     () => {
       const fetchData = async () => {

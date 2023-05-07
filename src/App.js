@@ -14,6 +14,8 @@ import Register from "./components/Register/Register";
 import Navbar from "./components/Navbar/Navbar";
 import Layout from "./components/Layout/Layout";
 import MovieDetails from "./components/MovieDetails/MovieDetails";
+import PopularMovieList from "./components/Movies/PopularMovieList/PopularMovieList";
+import GenreMovieList from "./components/Movies/GenreMovieList/GenreMovieList";
 
 // category filter, pagination.
 
@@ -39,11 +41,28 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Movies />}></Route>
-              <Route path="/:page" element={<Movies />}></Route>
+
               <Route path="/create" element={<MovieCreate />}></Route>
               <Route path="/register" element={<Register />}></Route>
               <Route path="/movie/:id" element={<MovieDetails />}></Route>
               <Route path="/error" element={<Error />}></Route>
+              <Route path="*" element={<Error />}></Route>
+            </Route>
+
+            <Route path="/movies" element={<Movies />}>
+              <Route index element={<PopularMovieList />}></Route>
+              <Route
+                path="/movies/:page"
+                element={<PopularMovieList />}
+              ></Route>
+              <Route
+                path="/movies/genre/:id"
+                element={<GenreMovieList />}
+              ></Route>
+              <Route
+                path="/movies/genre/:id/:page"
+                element={<GenreMovieList />}
+              ></Route>
               <Route path="*" element={<Error />}></Route>
             </Route>
           </Routes>
